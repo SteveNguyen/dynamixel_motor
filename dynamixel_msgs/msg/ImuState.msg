@@ -1,18 +1,18 @@
 float64 timestamp   # motor state is at this time
 int32 id            # motor id
 
-int16 yaw
-int16 pitch
-int16 roll
+int32 yaw
+int32 pitch
+int32 roll
 
-int16 accelX
-int16 accelY
-int16 accelZ
+int32 accelX
+int32 accelY
+int32 accelZ
 
-int16 gyroX
-int16 gyroY
-int16 gyroZ
+int32 gyroX
+int32 gyroY
+int32 gyroZ
 
-int16 magnX
-int16 magnY
-int16 magnZ
+int32 magnX
+int32 magnY
+int32 magnZ
