@@ -1028,20 +1028,56 @@ class DynamixelIO(object):
 
             # extract data values from the raw data
             yaw = response[5] + (response[6] << 8)
+            yaw = ~(yaw & 0xFFFF) + 1  # 2 complement
+
             pitch = response[7] + (response[8] << 8)
+            pitch = ~(pitch & 0xFFFF) + 1
+
             roll = response[9] + (response[10] << 8)
+            roll = ~(roll & 0xFFFF) + 1
 
             accelX = response[11] + (response[12] << 8)
+            accelX = ~(accelX & 0xFFFF) + 1
+
             accelY = response[13] + (response[14] << 8)
+            accelY = ~(accelY & 0xFFFF) + 1
+
             accelZ = response[15] + (response[16] << 8)
+            accelZ = ~(accelZ & 0xFFFF) + 1
 
             gyroX = response[17] + (response[18] << 8)
+            gyroX = ~(gyroX & 0xFFFF) + 1
+
             gyroY = response[19] + (response[20] << 8)
+            gyroY = ~(gyroY & 0xFFFF) + 1
+
             gyroZ = response[21] + (response[22] << 8)
+            gyroZ = ~(gyroZ & 0xFFFF) + 1
 
             magnX = response[23] + (response[24] << 8)
+            magnX = ~(magnX & 0xFFFF) + 1
+
             magnY = response[25] + (response[26] << 8)
+            magnY = ~(magnX & 0xFFFF) + 1
+
             magnZ = response[27] + (response[28] << 8)
+            magnZ = ~(magnX & 0xFFFF) + 1
+
+            # yaw = response[5] + (response[6] << 8)
+            # pitch = response[7] + (response[8] << 8)
+            # roll = response[9] + (response[10] << 8)
+
+            # accelX = response[11] + (response[12] << 8)
+            # accelY = response[13] + (response[14] << 8)
+            # accelZ = response[15] + (response[16] << 8)
+
+            # gyroX = response[17] + (response[18] << 8)
+            # gyroY = response[19] + (response[20] << 8)
+            # gyroZ = response[21] + (response[22] << 8)
+
+            # magnX = response[23] + (response[24] << 8)
+            # magnY = response[25] + (response[26] << 8)
+            # magnZ = response[27] + (response[28] << 8)
 
             timestamp = response[-1]
 

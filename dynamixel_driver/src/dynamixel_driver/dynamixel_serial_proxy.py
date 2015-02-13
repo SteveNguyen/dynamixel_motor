@@ -227,10 +227,22 @@ class SerialProxy():
                         self.motor_static_info[motor_id] = {}
                         self.motor_static_info[motor_id]['model'] = 'IMU'
                         self.motor_static_info[motor_id]['firmware'] = '0.1'
+                        self.motor_static_info[motor_id]['delay'] = 0
+                        self.motor_static_info[motor_id]['min_angle'] = 0
+                        self.motor_static_info[motor_id]['max_angle'] = 0
+                        self.motor_static_info[motor_id]['min_voltage'] = 0
+                        self.motor_static_info[motor_id]['max_voltage'] = 0
+
                     elif model_number == 250:
                         self.motor_static_info[motor_id] = {}
                         self.motor_static_info[motor_id]['model'] = 'ADC'
                         self.motor_static_info[motor_id]['firmware'] = '0.1'
+                        self.motor_static_info[motor_id]['delay'] = 0
+                        self.motor_static_info[motor_id]['min_angle'] = 0
+                        self.motor_static_info[motor_id]['max_angle'] = 0
+                        self.motor_static_info[motor_id]['min_voltage'] = 0
+                        self.motor_static_info[motor_id]['max_voltage'] = 0
+
                 except Exception as ex:
                     rospy.logerr(
                         'Exception thrown while getting attributes for motor %d - %s' % (motor_id, ex))
