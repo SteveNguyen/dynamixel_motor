@@ -225,8 +225,10 @@ class SerialProxy():
                     elif model_number == 253:
                         self.imu.append(motor_id)
                         self.motor_static_info[motor_id] = {}
+                        self.motor_static_info[motor_id]['model'] = 'IMU'
                     elif model_number == 250:
                         self.motor_static_info[motor_id] = {}
+                        self.motor_static_info[motor_id]['model'] = 'ADC'
                 except Exception as ex:
                     rospy.logerr(
                         'Exception thrown while getting attributes for motor %d - %s' % (motor_id, ex))
