@@ -1053,57 +1053,57 @@ class DynamixelIO(object):
             # magnZ = (response[27] + (response[28] << 8)) & 0xFFFF
 
             yaw = (response[5] + (response[6] << 8)) & 0xFFFF
-            if yaw > 32768:
-                yaw -= 32768
+            if yaw > 32767:
+                yaw -= 65536
 
             pitch = (response[7] + (response[8] << 8)) & 0xFFFF
-            if pitch > 32768:
-                pitch -= 32768
+            if pitch > 32767:
+                pitch -= 65536
 
             roll = (response[9] + (response[10] << 8)) & 0xFFFF
-            if roll > 32768:
-                roll -= 32768
+            if roll > 32767:
+                roll -= 65536
 
             accelX = (response[11] + (response[12] << 8)) & 0xFFFF
-            if accelX > 32768:
-                accelX -= 32768
+            if accelX > 32767:
+                accelX -= 65536
 
             accelY = (response[13] + (response[14] << 8)) & 0xFFFF
 
-            if accelY > 32768:
-                accelY -= 32768
+            if accelY > 32767:
+                accelY -= 65536
 
             accelZ = (response[15] + (response[16] << 8)) & 0xFFFF
-            if accelZ > 32768:
-                accelZ -= 32768
+            if accelZ > 32767:
+                accelZ -= 65536
 
             gyroX = (response[17] + (response[18] << 8)) & 0xFFFF
 
-            if gyroX > 32768:
-                gyroX -= 32768
+            if gyroX > 32767:
+                gyroX -= 65536
 
             gyroY = (response[19] + (response[20] << 8)) & 0xFFFF
 
-            if gyroY > 32768:
-                gyroY -= 32768
+            if gyroY > 32767:
+                gyroY -= 65536
 
             gyroZ = (response[21] + (response[22] << 8)) & 0xFFFF
 
-            if gyroZ > 32768:
-                gyroZ -= 32768
+            if gyroZ > 32767:
+                gyroZ -= 65536
 
             magnX = (response[23] + (response[24] << 8)) & 0xFFFF
-            if magnX > 32768:
-                magnX -= 32768
+            if magnX > 32767:
+                magnX -= 65536
 
             magnY = (response[25] + (response[26] << 8)) & 0xFFFF
 
-            if magnY > 32768:
-                magnY -= 32768
+            if magnY > 32767:
+                magnY -= 65536
 
             magnZ = (response[27] + (response[28] << 8)) & 0xFFFF
-            if magnZ > 32768:
-                magnZ -= 32768
+            if magnZ > 32767:
+                magnZ -= 65536
 
             timestamp = response[-1]
 
