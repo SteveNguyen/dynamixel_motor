@@ -1043,26 +1043,68 @@ class DynamixelIO(object):
             # if accelX > 32768:
             #     accelX -= 32768
 
-            accelY = (response[13] + (response[14] << 8)) & 0xFFFF
-            accelZ = (response[15] + (response[16] << 8)) & 0xFFFF
-            gyroX = (response[17] + (response[18] << 8)) & 0xFFFF
-            gyroY = (response[19] + (response[20] << 8)) & 0xFFFF
-            gyroZ = (response[21] + (response[22] << 8)) & 0xFFFF
-            magnX = (response[23] + (response[24] << 8)) & 0xFFFF
-            magnY = (response[25] + (response[26] << 8)) & 0xFFFF
-            magnZ = (response[27] + (response[28] << 8)) & 0xFFFF
+            # accelY = (response[13] + (response[14] << 8)) & 0xFFFF
+            # accelZ = (response[15] + (response[16] << 8)) & 0xFFFF
+            # gyroX = (response[17] + (response[18] << 8)) & 0xFFFF
+            # gyroY = (response[19] + (response[20] << 8)) & 0xFFFF
+            # gyroZ = (response[21] + (response[22] << 8)) & 0xFFFF
+            # magnX = (response[23] + (response[24] << 8)) & 0xFFFF
+            # magnY = (response[25] + (response[26] << 8)) & 0xFFFF
+            # magnZ = (response[27] + (response[28] << 8)) & 0xFFFF
+
             yaw = (response[5] + (response[6] << 8)) & 0xFFFF
+            if yaw > 32768:
+                yaw -= 32768
+
             pitch = (response[7] + (response[8] << 8)) & 0xFFFF
+            if pitch > 32768:
+                pitch -= 32768
+
             roll = (response[9] + (response[10] << 8)) & 0xFFFF
+            if roll > 32768:
+                roll -= 32768
+
             accelX = (response[11] + (response[12] << 8)) & 0xFFFF
+            if accelX > 32768:
+                accelX -= 32768
+
             accelY = (response[13] + (response[14] << 8)) & 0xFFFF
+
+            if accelY > 32768:
+                accelY -= 32768
+
             accelZ = (response[15] + (response[16] << 8)) & 0xFFFF
+            if accelZ > 32768:
+                accelZ -= 32768
+
             gyroX = (response[17] + (response[18] << 8)) & 0xFFFF
+
+            if gyroX > 32768:
+                gyroX -= 32768
+
             gyroY = (response[19] + (response[20] << 8)) & 0xFFFF
+
+            if gyroY > 32768:
+                gyroY -= 32768
+
             gyroZ = (response[21] + (response[22] << 8)) & 0xFFFF
+
+            if gyroZ > 32768:
+                gyroZ -= 32768
+
             magnX = (response[23] + (response[24] << 8)) & 0xFFFF
+            if magnX > 32768:
+                magnX -= 32768
+
             magnY = (response[25] + (response[26] << 8)) & 0xFFFF
+
+            if magnY > 32768:
+                magnY -= 32768
+
             magnZ = (response[27] + (response[28] << 8)) & 0xFFFF
+            if magnZ > 32768:
+                magnZ -= 32768
+
             timestamp = response[-1]
 
             # return the data in a dictionary
