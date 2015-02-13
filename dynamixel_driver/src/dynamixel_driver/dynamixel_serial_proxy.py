@@ -224,6 +224,9 @@ class SerialProxy():
                         self.__fill_motor_parameters(motor_id, model_number)
                     elif model_number == 253:
                         self.imu.append(motor_id)
+                        self.motor_static_info[motor_id] = {}
+                    elif model_number == 250:
+                        self.motor_static_info[motor_id] = {}
                 except Exception as ex:
                     rospy.logerr(
                         'Exception thrown while getting attributes for motor %d - %s' % (motor_id, ex))
