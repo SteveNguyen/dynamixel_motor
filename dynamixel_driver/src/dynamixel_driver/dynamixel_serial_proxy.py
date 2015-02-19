@@ -72,7 +72,7 @@ class SerialProxy():
                  port_name='/dev/ttyUSB0',
                  port_namespace='ttyUSB0',
                  baud_rate='1000000',
-                 motor_list_id,
+                 motor_list_id=[],
                  min_motor_id=1,
                  max_motor_id=25,
                  update_rate=5,
@@ -232,7 +232,7 @@ class SerialProxy():
                     elif model_number == 253:
                         self.imu.append(motor_id)
 
-                        #useless
+                        # useless
                         self.motor_static_info[motor_id] = {}
                         self.motor_static_info[motor_id]['model'] = 'IMU'
                         self.motor_static_info[motor_id]['firmware'] = '0.1'
@@ -266,10 +266,9 @@ class SerialProxy():
         for motor_id in to_delete_if_error:
             self.motors.remove(motor_id)
 
-        motorsparams=list(self.motors)
+        motorsparams = list(self.motors)
         for imu_id in self.imu:
             motorsparams.remove(imu_id)
-
 
         rospy.set_param('dynamixel/%s/connected_ids' %
                         self.port_namespace, motorsparams)
