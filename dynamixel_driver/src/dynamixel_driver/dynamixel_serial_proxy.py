@@ -109,12 +109,8 @@ class SerialProxy():
         self.current_state = MotorStateList()
         self.num_ping_retries = 5
 
-        if not self.fast:
-            self.motor_states_pub = rospy.Publisher(
-                'motor_states/%s' % self.port_namespace, MotorStateList, queue_size=None)
-        else:
-            self.motor_states_pub = rospy.Publisher(
-                'motor_states/%s' % self.port_namespace, MotorPosList, queue_size=None)
+        self.motor_states_pub = rospy.Publisher(
+            'motor_states/%s' % self.port_namespace, MotorStateList, queue_size=None)
 
         self.diagnostics_pub = rospy.Publisher(
             '/diagnostics', DiagnosticArray, queue_size=None)
