@@ -72,6 +72,7 @@ class SerialProxy():
                  port_name='/dev/ttyUSB0',
                  port_namespace='ttyUSB0',
                  baud_rate='1000000',
+                 motor_list_id,
                  min_motor_id=1,
                  max_motor_id=25,
                  update_rate=5,
@@ -82,8 +83,14 @@ class SerialProxy():
         self.port_name = port_name
         self.port_namespace = port_namespace
         self.baud_rate = baud_rate
+        self.motor_list_id = motor_list_id
         self.min_motor_id = min_motor_id
         self.max_motor_id = max_motor_id
+
+        if self.motor_list_id == []:
+            self.motor_list_id = range(
+                self.min_motor_id, self.max_motor_id + 1, 1)
+
         self.update_rate = update_rate
         self.diagnostics_rate = diagnostics_rate
         self.error_level_temp = error_level_temp
@@ -189,13 +196,13 @@ class SerialProxy():
         self.motor_static_info[motor_id]['max_voltage'] = voltages['max']
 
     def __find_motors(self):
-        rospy.loginfo('%s: Pinging motor IDs %d through %d...' %
-                      (self.port_namespace, self.min_motor_id, self.max_motor_id))
+        rospy.loginfo('%s: Pinging motor IDs %s' %
+                      (self.port_namespace, self.motor_list_id))
         self.motors = []
         self.imu = []  # only one please
         self.motor_static_info = {}
 
-        for motor_id in range(self.min_motor_id, self.max_motor_id + 1):
+        for motor_id in self.motor_list_id:
             for trial in range(self.num_ping_retries):
                 try:
                     result = self.dxl_io.ping(motor_id)
@@ -350,10 +357,13 @@ class SerialProxy():
             status.name = 'Dynamixel Serial Bus (%s)' % self.port_namespace
             status.hardware_id = 'Dynamixel Serial Bus on port %s' % self.port_name
             status.values.append(KeyValue('Baud Rate', str(self.baud_rate)))
+            # status.values.append(
+            #     KeyValue('Min Motor ID', str(self.min_motor_id)))
+            # status.values.append(
+            #     KeyValue('Max Motor ID', str(self.max_motor_id)))
             status.values.append(
-                KeyValue('Min Motor ID', str(self.min_motor_id)))
-            status.values.append(
-                KeyValue('Max Motor ID', str(self.max_motor_id)))
+                KeyValue('Motors ID', str(self.motor_list_id)))
+
             status.values.append(
                 KeyValue('Desired Update Rate', str(self.update_rate)))
             status.values.append(
