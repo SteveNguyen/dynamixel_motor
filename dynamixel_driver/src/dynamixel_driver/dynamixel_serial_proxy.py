@@ -84,8 +84,8 @@ class SerialProxy():
                  diagnostics_rate=1,
                  error_level_temp=75,
                  warn_level_temp=70,
-                 fast=True,
-                 readback_echo=False):
+                 readback_echo=False,
+                 fast=True):
         self.port_name = port_name
         self.port_namespace = port_namespace
         self.baud_rate = baud_rate
