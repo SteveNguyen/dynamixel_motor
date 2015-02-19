@@ -311,7 +311,7 @@ class SerialProxy():
                 try:
                     if motor_id not in self.imu:
                         if not self.fast:
-                            ROS_INFO("standard update")
+                            rospy.loginfo("standard update")
                             state = self.dxl_io.get_feedback(motor_id)
 
                             if state:
@@ -319,7 +319,7 @@ class SerialProxy():
                                 if dynamixel_io.exception:
                                     raise dynamixel_io.exception
                         else:
-                            ROS_INFO("fast update")
+                            rospy.loginfo("fast update")
                             # fast mode, read only the pos
                             state = self.dxl_io.get_fast_feedback(motor_id)
 
