@@ -231,6 +231,8 @@ class SerialProxy():
                         self.__fill_motor_parameters(motor_id, model_number)
                     elif model_number == 253:
                         self.imu.append(motor_id)
+
+                        #useless
                         self.motor_static_info[motor_id] = {}
                         self.motor_static_info[motor_id]['model'] = 'IMU'
                         self.motor_static_info[motor_id]['firmware'] = '0.1'
@@ -241,6 +243,7 @@ class SerialProxy():
                         self.motor_static_info[motor_id]['max_voltage'] = 0
 
                     elif model_number == 250:
+                        to_delete_if_error.append(motor_id)
                         self.motor_static_info[motor_id] = {}
                         self.motor_static_info[motor_id]['model'] = 'ADC'
                         self.motor_static_info[motor_id]['firmware'] = '0.1'
@@ -263,8 +266,13 @@ class SerialProxy():
         for motor_id in to_delete_if_error:
             self.motors.remove(motor_id)
 
+        motorsparams=list(self.motors)
+        for imu_id in self.imu:
+            motorsparams.remove(imu_id)
+
+
         rospy.set_param('dynamixel/%s/connected_ids' %
-                        self.port_namespace, self.motors)
+                        self.port_namespace, motorsparams)
 
         status_str = '%s: Found %d motors - ' % (
             self.port_namespace, len(self.motors))
@@ -294,7 +302,7 @@ class SerialProxy():
             imu_state = []
             for motor_id in self.motors:
                 try:
-                    if motor_id != self.imu[0]:
+                    if motor_id not in self.imu:
                         state = self.dxl_io.get_feedback(motor_id)
 
                         if state:
