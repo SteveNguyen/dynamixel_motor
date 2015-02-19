@@ -84,15 +84,14 @@ class SerialProxy():
                  diagnostics_rate=1,
                  error_level_temp=75,
                  warn_level_temp=70,
-                 readback_echo=False,
-                 fast=True):
+                 readback_echo=False):
         self.port_name = port_name
         self.port_namespace = port_namespace
         self.baud_rate = baud_rate
         self.motor_list_id = motor_list_id
         self.min_motor_id = min_motor_id
         self.max_motor_id = max_motor_id
-        self.fast = fast
+        self.fast = True  # TODO add arg
 
         if self.motor_list_id == []:
             self.motor_list_id = range(
@@ -311,7 +310,7 @@ class SerialProxy():
                 try:
                     if motor_id not in self.imu:
                         if not self.fast:
-                            rospy.loginfo("standard update")
+                            # rospy.loginfo("standard update")
                             state = self.dxl_io.get_feedback(motor_id)
 
                             if state:
@@ -319,7 +318,7 @@ class SerialProxy():
                                 if dynamixel_io.exception:
                                     raise dynamixel_io.exception
                         else:
-                            rospy.loginfo("fast update")
+                            # rospy.loginfo("fast update")
                             # fast mode, read only the pos
                             state = self.dxl_io.get_fast_feedback(motor_id)
 
