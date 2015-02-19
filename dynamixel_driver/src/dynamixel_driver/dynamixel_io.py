@@ -1013,6 +1013,37 @@ class DynamixelIO(object):
                     'temperature': temperature,
                     'moving': bool(moving)}
 
+    def get_fast_feedback(self, servo_id):
+        """
+        Returns the id, position, error
+        """
+
+        response = self.read(servo_id, DXL_PRESENT_POSITION_L, 2)
+
+        if response:
+            self.exception_on_error(
+                response[4], servo_id, 'fetching fast servo status (only pos)')
+        if len(response) == 9:
+            # extract data values from the raw data
+            position = response[5] + (response[6] << 8)
+            timestamp = response[-1]
+
+            return {'timestamp': timestamp,
+                    'id': servo_id,
+                    'goal': 0,
+                    'position': position,
+                    'error': 0,
+                    'speed': 0,
+                    'load': 0,
+                    'voltage': 0,
+                    'temperature': 0,
+                    'moving': True}
+
+            # return the data in a dictionary
+            # return {'timestamp': timestamp,
+            #         'id': servo_id,
+            #         'position': position}
+
     def get_imu_feedback(self, servo_id):
         """
         Returns the imu data

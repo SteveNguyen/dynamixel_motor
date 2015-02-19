@@ -63,6 +63,11 @@ from diagnostic_msgs.msg import KeyValue
 from dynamixel_msgs.msg import MotorState
 from dynamixel_msgs.msg import MotorStateList
 
+# maybe todo
+# from dynamixel_msgs.msg import MotorPos
+# from dynamixel_msgs.msg import MotorPosList
+
+
 from dynamixel_msgs.msg import ImuState
 
 
@@ -79,6 +84,7 @@ class SerialProxy():
                  diagnostics_rate=1,
                  error_level_temp=75,
                  warn_level_temp=70,
+                 fast=True,
                  readback_echo=False):
         self.port_name = port_name
         self.port_namespace = port_namespace
@@ -86,6 +92,7 @@ class SerialProxy():
         self.motor_list_id = motor_list_id
         self.min_motor_id = min_motor_id
         self.max_motor_id = max_motor_id
+        self.fast = fast
 
         if self.motor_list_id == []:
             self.motor_list_id = range(
@@ -102,8 +109,13 @@ class SerialProxy():
         self.current_state = MotorStateList()
         self.num_ping_retries = 5
 
-        self.motor_states_pub = rospy.Publisher(
-            'motor_states/%s' % self.port_namespace, MotorStateList, queue_size=None)
+        if not self.fast:
+            self.motor_states_pub = rospy.Publisher(
+                'motor_states/%s' % self.port_namespace, MotorStateList, queue_size=None)
+        else:
+            self.motor_states_pub = rospy.Publisher(
+                'motor_states/%s' % self.port_namespace, MotorPosList, queue_size=None)
+
         self.diagnostics_pub = rospy.Publisher(
             '/diagnostics', DiagnosticArray, queue_size=None)
 
@@ -302,12 +314,21 @@ class SerialProxy():
             for motor_id in self.motors:
                 try:
                     if motor_id not in self.imu:
-                        state = self.dxl_io.get_feedback(motor_id)
+                        if not self.fast:
+                            state = self.dxl_io.get_feedback(motor_id)
 
-                        if state:
-                            motor_states.append(MotorState(**state))
-                            if dynamixel_io.exception:
-                                raise dynamixel_io.exception
+                            if state:
+                                motor_states.append(MotorState(**state))
+                                if dynamixel_io.exception:
+                                    raise dynamixel_io.exception
+                        else:
+                            # fast mode, read only the pos
+                            state = self.dxl_io.get_fast_feedback(motor_id)
+
+                            if state:
+                                motor_states.append(MotorState(**state))
+                                if dynamixel_io.exception:
+                                    raise dynamixel_io.exception
 
                     else:  # read IMU
                         imustate = self.dxl_io.get_imu_feedback(motor_id)
