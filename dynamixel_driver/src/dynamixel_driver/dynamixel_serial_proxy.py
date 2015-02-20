@@ -352,7 +352,8 @@ class SerialProxy():
                                 motor_states.append(MotorState(**state))
                                 if dynamixel_io.exception:
                                     raise dynamixel_io.exception
-                        elif:
+
+                        else:
                             # rospy.loginfo("fast update")
                             # fast mode, read only the pos
                             state = self.dxl_io.get_fast_feedback(motor_id)
