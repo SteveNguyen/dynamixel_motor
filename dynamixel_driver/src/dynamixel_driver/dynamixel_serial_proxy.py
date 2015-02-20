@@ -324,7 +324,7 @@ class SerialProxy():
                     else:
                         statelist, errors = self.dxl_io.get_fast_sync_feedback(
                             self.sync_read_list)
-                        print errors
+
                     if statelist:
                         for state in statelist:
                             motor_states.append(MotorState(**state))

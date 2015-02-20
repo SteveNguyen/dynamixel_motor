@@ -1175,6 +1175,7 @@ class DynamixelIO(object):
 
                     timestamp = response[-1]
 
+                    position = 42
                     data = {'timestamp': timestamp,
                             'id': id,
                             'goal': 0,
