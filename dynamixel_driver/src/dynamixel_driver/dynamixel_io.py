@@ -1128,6 +1128,9 @@ class DynamixelIO(object):
 
                     state_list.append(data)
 
+                    i += 1
+            prev = r
+
         return state_list, errors
 
     def get_fast_feedback(self, servo_id):
