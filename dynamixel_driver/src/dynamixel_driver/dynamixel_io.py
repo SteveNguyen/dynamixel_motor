@@ -1090,6 +1090,8 @@ class DynamixelIO(object):
 
             if len(response) == 7 + (17 + 1) * (r - prev):  # len(servo_id_list):
 
+                print servo_id_list[prev:r], response
+
                 i = 0
                 for id in servo_id_list[prev:r]:
 
