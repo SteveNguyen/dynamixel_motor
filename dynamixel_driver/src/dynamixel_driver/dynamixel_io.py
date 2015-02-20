@@ -1099,7 +1099,7 @@ class DynamixelIO(object):
                 timestamp = response[-1]
 
                 data = {'timestamp': timestamp,
-                        'id': servo_id,
+                        'id': servo_id_list[i],
                         'goal': goal,
                         'position': position,
                         'error': error,
