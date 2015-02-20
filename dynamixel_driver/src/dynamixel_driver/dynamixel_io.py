@@ -265,7 +265,7 @@ class DynamixelIO(object):
             # wait for response packet from the motor
             timestamp = time.time()
             # time.sleep(0.0013)  # 0.00235)
-            time.sleep(0.013)  # 0.00235)
+            time.sleep(0.005)  # 0.00235)
 
             # read response
             data = self.__read_response(DXL_SYNC_READ_ADDR)
@@ -1078,10 +1078,9 @@ class DynamixelIO(object):
             slicerange.append(slicerange[-1] + remain)
 
         prev = 0
-        print
-        print slicerange
-        for r in slicerange:  # fixme, something more generic...
-            print prev, r, servo_id_list[prev:r]
+
+        for r in slicerange:
+
             response = self.sync_read(
                 servo_id_list[prev:r], DXL_GOAL_POSITION_L, 17)
 
