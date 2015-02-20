@@ -1076,7 +1076,7 @@ class DynamixelIO(object):
 
             for i in range(len(servo_id_list)):
 
-                errors[servo_id_list] = response[5 + i * (17 + 1)]
+                errors[servo_id_list[i]] = response[5 + i * (17 + 1)]
                 # extract data values from the raw data
                 goal = response[5 + 1 + i * (17 + 1)] + (
                     response[6 + 1 + i * (17 + 1)] << 8)
