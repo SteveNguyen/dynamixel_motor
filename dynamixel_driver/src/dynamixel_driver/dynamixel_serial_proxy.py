@@ -100,9 +100,6 @@ class SerialProxy():
 
         self.sync_read_list = sync_read_list
 
-        for s in self.sync_read_list:  # separate the sync read ids
-            self.motors.remove(s)
-
         self.update_rate = update_rate
         self.diagnostics_rate = diagnostics_rate
         self.error_level_temp = error_level_temp
@@ -307,41 +304,46 @@ class SerialProxy():
             [float(self.update_rate)] * num_events, maxlen=num_events)
         last_time = rospy.Time.now()
 
+        motorlist = list(self.motors)
+        for s in self.sync_read_list:  # separate the sync read ids
+            motorlist.remove(s)
+
         rate = rospy.Rate(self.update_rate)
         while not rospy.is_shutdown() and self.running:
             # get current state of all motors and publish to motor_states topic
             motor_states = []
             imu_state = []
 
-            try:
-                statelist, errors = self.dxl_io.get_sync_feedback(
-                    self.sync_read_list)
-                # TODO check errors
+            if self.sync_read_list != []:
+                try:
+                    statelist, errors = self.dxl_io.get_sync_feedback(
+                        self.sync_read_list)
+                    # TODO check errors
 
-                if statelist:
-                    for state in statelist:
-                        motor_states.append(MotorState(**state))
-                    if dynamixel_io.exception:
-                        raise dynamixel_io.exception
+                    if statelist:
+                        for state in statelist:
+                            motor_states.append(MotorState(**state))
+                        if dynamixel_io.exception:
+                            raise dynamixel_io.exception
 
-            except dynamixel_io.FatalErrorCodeError, fece:
-                rospy.logerr(fece)
-            except dynamixel_io.NonfatalErrorCodeError, nfece:
-                self.error_counts['non_fatal'] += 1
-                rospy.logdebug(nfece)
-            except dynamixel_io.ChecksumError, cse:
-                self.error_counts['checksum'] += 1
-                rospy.logdebug(cse)
-            except dynamixel_io.DroppedPacketError, dpe:
-                self.error_counts['dropped'] += 1
-                rospy.logdebug(dpe.message)
-            except OSError, ose:
-                if ose.errno != errno.EAGAIN:
-                    rospy.logfatal(errno.errorcode[ose.errno])
-                    rospy.signal_shutdown(errno.errorcode[ose.errno])
+                except dynamixel_io.FatalErrorCodeError, fece:
+                    rospy.logerr(fece)
+                except dynamixel_io.NonfatalErrorCodeError, nfece:
+                    self.error_counts['non_fatal'] += 1
+                    rospy.logdebug(nfece)
+                except dynamixel_io.ChecksumError, cse:
+                    self.error_counts['checksum'] += 1
+                    rospy.logdebug(cse)
+                except dynamixel_io.DroppedPacketError, dpe:
+                    self.error_counts['dropped'] += 1
+                    rospy.logdebug(dpe.message)
+                except OSError, ose:
+                    if ose.errno != errno.EAGAIN:
+                        rospy.logfatal(errno.errorcode[ose.errno])
+                        rospy.signal_shutdown(errno.errorcode[ose.errno])
 
             # if for some reasons there are motors we don't want to sync read
-            for motor_id in self.motors:
+            for motor_id in motorlist:
                 try:
                     if motor_id not in self.imu:
 
