@@ -1148,7 +1148,7 @@ class DynamixelIO(object):
         errors = {}
         state_list = []
 
-        maxl = 10
+        maxl = 20
         nbcut = len(servo_id_list) // maxl
         remain = len(servo_id_list) % maxl
 
