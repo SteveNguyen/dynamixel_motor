@@ -1218,7 +1218,7 @@ class DynamixelIO(object):
                     'voltage': 0,
                     'temperature': 0,
                     'moving': True}
-g
+
             # return the data in a dictionary
             # return {'timestamp': timestamp,
             #         'id': servo_id,
