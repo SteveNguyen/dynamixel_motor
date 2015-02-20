@@ -265,7 +265,7 @@ class DynamixelIO(object):
             # wait for response packet from the motor
             timestamp = time.time()
             # time.sleep(0.0013)  # 0.00235)
-            time.sleep(0.015)  # 0.00235)
+            time.sleep(0.02)  # 0.00235)
 
             # read response
             data = self.__read_response(DXL_SYNC_READ_ADDR)
@@ -1168,7 +1168,7 @@ class DynamixelIO(object):
                     response[4], 0xfd, 'fetching full servo status (sync)')
 
             if len(response) == 7 + (2 + 1) * (r - prev):  # len(servo_id_list):
-                print servo_id_list[prev:r], response
+                # print servo_id_list[prev:r], response
                 i = 0
                 for id in servo_id_list[prev:r]:
 
