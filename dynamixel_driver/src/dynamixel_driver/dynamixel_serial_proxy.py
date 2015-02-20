@@ -92,7 +92,7 @@ class SerialProxy():
         self.motor_list_id = motor_list_id
         self.min_motor_id = min_motor_id
         self.max_motor_id = max_motor_id
-        self.fast = False  # TODO add arg
+        self.fast = True  # TODO add arg
 
         if self.motor_list_id == []:
             self.motor_list_id = range(
@@ -316,10 +316,13 @@ class SerialProxy():
 
             if self.sync_read_list != []:
                 try:
-                    statelist, errors = self.dxl_io.get_sync_feedback(
-                        self.sync_read_list)
+                    if not self.fast:
+                        statelist, errors = self.dxl_io.get_sync_feedback(
+                            self.sync_read_list)
                     # TODO check errors
-
+                    else:
+                        statelist, errors = self.dxl_io.get_fast_sync_feedback(
+                            self.sync_read_list)
                     if statelist:
                         for state in statelist:
                             motor_states.append(MotorState(**state))

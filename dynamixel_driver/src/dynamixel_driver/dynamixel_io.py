@@ -264,8 +264,8 @@ class DynamixelIO(object):
 
             # wait for response packet from the motor
             timestamp = time.time()
-            # time.sleep(0.0013)  # 0.00235)
-            time.sleep(0.0025)  # 0.00235)
+            time.sleep(0.0013)  # 0.00235)
+            # time.sleep(0.0025)  # 0.00235)
 
             # read response
             data = self.__read_response(DXL_SYNC_READ_ADDR)
@@ -1133,6 +1133,66 @@ class DynamixelIO(object):
 
         return state_list, errors
 
+    def get_fast_sync_feedback(self, servo_id_list):
+        """
+        Returns the id, position
+        and moving values from the specified servo.
+        """
+
+        # WARNING! The length of the packet is in fact limited to 255!
+        # we may have to read everything in 2 times
+
+        errors = {}
+        state_list = []
+
+        nbcut = len(servo_id_list) // 12
+        remain = len(servo_id_list) % 12
+
+        slicerange = [12 * i for i in range(1, nbcut + 1, 1)]
+        if remain != 0:
+            slicerange.append(slicerange[-1] + remain)
+
+        prev = 0
+
+        for r in slicerange:
+
+            response = self.sync_read(
+                servo_id_list[prev:r], DXL_GOAL_POSITION_L, 2)
+
+            if response:
+                self.exception_on_error(
+                    response[4], 0xfd, 'fetching full servo status (sync)')
+
+            if len(response) == 7 + (2 + 1) * (r - prev):  # len(servo_id_list):
+
+                i = 0
+                for id in servo_id_list[prev:r]:
+
+                    errors[id] = response[5 + i * (2 + 1)]
+                    # extract data values from the raw data
+                    position = response[5 + 1 + i * (2 + 1)] + (
+                        response[5 + 1 + i * (2 + 1)] << 8)
+
+                    timestamp = response[-1]
+
+                    data = {'timestamp': timestamp,
+                            'id': id,
+                            'goal': 0,
+                            'position': position,
+                            'error': 0,
+                            'speed': 0,
+                            'load': 0,
+                            'voltage': 0,
+                            'temperature': ,
+                            'moving': True}
+
+                    state_list.append(data)
+
+                    i += 1
+            prev = r
+
+        return state_list, errors
+
     def get_fast_feedback(self, servo_id):
         """
         Returns the id, position, error
@@ -1158,7 +1218,7 @@ class DynamixelIO(object):
                     'voltage': 0,
                     'temperature': 0,
                     'moving': True}
-
+g
             # return the data in a dictionary
             # return {'timestamp': timestamp,
             #         'id': servo_id,
