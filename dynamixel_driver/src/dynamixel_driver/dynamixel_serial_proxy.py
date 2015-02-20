@@ -100,6 +100,9 @@ class SerialProxy():
 
         self.sync_read_list = sync_read_list
 
+        for s in self.sync_read_list:  # separate the sync read ids
+            self.motors.remove(s)
+
         self.update_rate = update_rate
         self.diagnostics_rate = diagnostics_rate
         self.error_level_temp = error_level_temp
@@ -309,9 +312,6 @@ class SerialProxy():
             # get current state of all motors and publish to motor_states topic
             motor_states = []
             imu_state = []
-
-            for s in self.sync_read_list:  # separate the sync read ids
-                self.motors.remove(s)
 
             try:
                 statelist, errors = self.dxl_io.get_sync_feedback(
