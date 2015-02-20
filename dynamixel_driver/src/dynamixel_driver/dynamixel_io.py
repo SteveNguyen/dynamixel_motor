@@ -268,7 +268,7 @@ class DynamixelIO(object):
             time.sleep(0.01)  # 0.00235)
 
             # read response
-            data = self.__read_response(servo_id)
+            data = self.__read_response(0xfd)
             data.append(timestamp)
 
         return data
