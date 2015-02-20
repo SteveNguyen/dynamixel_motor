@@ -92,7 +92,7 @@ class SerialProxy():
         self.motor_list_id = motor_list_id
         self.min_motor_id = min_motor_id
         self.max_motor_id = max_motor_id
-        self.fast = True  # TODO add arg
+        self.fast = False  # TODO add arg
 
         if self.motor_list_id == []:
             self.motor_list_id = range(
