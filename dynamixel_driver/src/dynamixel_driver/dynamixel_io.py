@@ -1183,7 +1183,7 @@ class DynamixelIO(object):
                             'speed': 0,
                             'load': 0,
                             'voltage': 0,
-                            'temperature': ,
+                            'temperature': 0,
                             'moving': True}
 
                     state_list.append(data)
