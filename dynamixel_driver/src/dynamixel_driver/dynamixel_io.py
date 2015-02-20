@@ -1070,7 +1070,7 @@ class DynamixelIO(object):
 
         if response:
             self.exception_on_error(
-                response[4], servo_id, 'fetching full servo status (sync)')
+                response[4], 0xfd, 'fetching full servo status (sync)')
 
         if len(response) == 7 + (17 + 1) * len(servo_id_list):
 
