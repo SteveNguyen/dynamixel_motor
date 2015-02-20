@@ -1070,10 +1070,11 @@ class DynamixelIO(object):
         errors = {}
         state_list = []
 
-        nbcut = len(servo_id_list) // 12
-        remain = len(servo_id_list) % 12
+        maxl = 10
+        nbcut = len(servo_id_list) // 10
+        remain = len(servo_id_list) % 10
 
-        slicerange = [12 * i for i in range(1, nbcut + 1, 1)]
+        slicerange = [maxl * i for i in range(1, nbcut + 1, 1)]
         if remain != 0:
             slicerange.append(slicerange[-1] + remain)
 
@@ -1090,7 +1091,7 @@ class DynamixelIO(object):
 
             if len(response) == 7 + (17 + 1) * (r - prev):  # len(servo_id_list):
 
-                print servo_id_list[prev:r], response
+                # print servo_id_list[prev:r], response
 
                 i = 0
                 for id in servo_id_list[prev:r]:
@@ -1147,10 +1148,11 @@ class DynamixelIO(object):
         errors = {}
         state_list = []
 
-        nbcut = len(servo_id_list) // 12
-        remain = len(servo_id_list) % 12
+        maxl = 10
+        nbcut = len(servo_id_list) // maxl
+        remain = len(servo_id_list) % maxl
 
-        slicerange = [12 * i for i in range(1, nbcut + 1, 1)]
+        slicerange = [maxl * i for i in range(1, nbcut + 1, 1)]
         if remain != 0:
             slicerange.append(slicerange[-1] + remain)
 
@@ -1166,7 +1168,7 @@ class DynamixelIO(object):
                     response[4], 0xfd, 'fetching full servo status (sync)')
 
             if len(response) == 7 + (2 + 1) * (r - prev):  # len(servo_id_list):
-
+                print servo_id_list[prev:r], response
                 i = 0
                 for id in servo_id_list[prev:r]:
 
