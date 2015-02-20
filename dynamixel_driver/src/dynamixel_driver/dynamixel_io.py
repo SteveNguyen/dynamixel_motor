@@ -1179,7 +1179,7 @@ class DynamixelIO(object):
                             'id': id,
                             'goal': 0,
                             'position': position,
-                            'error': 0,
+                            'error': errors[id],
                             'speed': 0,
                             'load': 0,
                             'voltage': 0,
