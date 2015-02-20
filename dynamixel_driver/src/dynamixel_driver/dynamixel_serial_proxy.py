@@ -78,6 +78,7 @@ class SerialProxy():
                  port_namespace='ttyUSB0',
                  baud_rate='1000000',
                  motor_list_id=[],
+                 sync_read_list=[],
                  min_motor_id=1,
                  max_motor_id=25,
                  update_rate=5,
@@ -91,11 +92,13 @@ class SerialProxy():
         self.motor_list_id = motor_list_id
         self.min_motor_id = min_motor_id
         self.max_motor_id = max_motor_id
-        self.fast = True  # TODO add arg
+        self.fast = False  # TODO add arg
 
         if self.motor_list_id == []:
             self.motor_list_id = range(
                 self.min_motor_id, self.max_motor_id + 1, 1)
+
+        self.sync_read_list = sync_read_list
 
         self.update_rate = update_rate
         self.diagnostics_rate = diagnostics_rate
@@ -306,9 +309,41 @@ class SerialProxy():
             # get current state of all motors and publish to motor_states topic
             motor_states = []
             imu_state = []
+
+            for s in self.sync_read_list:  # separate the sync read ids
+                self.motors.remove(s)
+
+            try:
+                statelist, errors = self.dxl_io.get_sync_feedback(
+                    self.sync_read_list)
+                # TODO check errors
+
+                if statelist:
+                    motor_states = statelist
+                    if dynamixel_io.exception:
+                        raise dynamixel_io.exception
+
+                except dynamixel_io.FatalErrorCodeError, fece:
+                    rospy.logerr(fece)
+                except dynamixel_io.NonfatalErrorCodeError, nfece:
+                    self.error_counts['non_fatal'] += 1
+                    rospy.logdebug(nfece)
+                except dynamixel_io.ChecksumError, cse:
+                    self.error_counts['checksum'] += 1
+                    rospy.logdebug(cse)
+                except dynamixel_io.DroppedPacketError, dpe:
+                    self.error_counts['dropped'] += 1
+                    rospy.logdebug(dpe.message)
+                except OSError, ose:
+                    if ose.errno != errno.EAGAIN:
+                        rospy.logfatal(errno.errorcode[ose.errno])
+                        rospy.signal_shutdown(errno.errorcode[ose.errno])
+
+            # if for some reasons there are motors we don't want to sync read
             for motor_id in self.motors:
                 try:
                     if motor_id not in self.imu:
+
                         if not self.fast:
                             # rospy.loginfo("standard update")
                             state = self.dxl_io.get_feedback(motor_id)
@@ -317,7 +352,7 @@ class SerialProxy():
                                 motor_states.append(MotorState(**state))
                                 if dynamixel_io.exception:
                                     raise dynamixel_io.exception
-                        else:
+                        elif:
                             # rospy.loginfo("fast update")
                             # fast mode, read only the pos
                             state = self.dxl_io.get_fast_feedback(motor_id)

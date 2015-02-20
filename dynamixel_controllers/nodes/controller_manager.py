@@ -94,6 +94,9 @@ class ControllerManager:
             motor_list_id = port_config[
                 'motor_list_id'] if 'motor_list_id' in port_config else []
 
+            sync_read_list = port_config[
+                'sync_read_list'] if 'sync_read_list' in port_config else []
+
             update_rate = port_config[
                 'update_rate'] if 'update_rate' in port_config else 5
             error_level_temp = 75
@@ -111,6 +114,7 @@ class ControllerManager:
                                        port_namespace,
                                        baud_rate,
                                        motor_list_id,
+                                       sync_read_list,
                                        min_motor_id,
                                        max_motor_id,
                                        update_rate,

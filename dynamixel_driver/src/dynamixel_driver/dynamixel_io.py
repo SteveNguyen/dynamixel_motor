@@ -230,6 +230,48 @@ class DynamixelIO(object):
         with self.serial_mutex:
             self.__write_serial(packetStr)
 
+    def sync_read(self, servo_id_list, address, size):
+        """ Read "size" bytes of data from servo with "servo_id" starting at the
+        register with "address". "address" is an integer between 0 and 57. It is
+        recommended to use the constants in module dynamixel_const for readability.
+
+        To read the position from servo with id 1, the method should be called
+        like:
+            read(1, DXL_GOAL_POSITION_L, 2)
+        """
+        # Number of bytes following standard header (0xFF, 0xFF, id, length)
+        length = 4 + len(servo_id_list)  # instruction, address, size, checksum
+
+        packet = [0xFF, 0xFF]
+        data = [DXL_SYNC_READ_ADDR, lenth, DXL_SYNC_READ_DATA, address, size]
+
+        data = data + servo_id_list
+
+        check = 0
+        for d in data:
+            check += d
+
+        checksum = 255 - ((check) % 256)
+
+        packet = packet + data + checksum
+        packetStr = array('B', packet).tostring()
+                          # same as: packetStr = ''.join([chr(byte) for byte in
+                          # packet])
+
+        with self.serial_mutex:
+            self.__write_serial(packetStr)
+
+            # wait for response packet from the motor
+            timestamp = time.time()
+            # time.sleep(0.0013)  # 0.00235)
+            time.sleep(0.01)  # 0.00235)
+
+            # read response
+            data = self.__read_response(servo_id)
+            data.append(timestamp)
+
+        return data
+
     def ping(self, servo_id):
         """ Ping the servo with "servo_id". This causes the servo to return a
         "status packet". This can tell us if the servo is attached and powered,
@@ -1012,6 +1054,62 @@ class DynamixelIO(object):
                     'voltage': voltage,
                     'temperature': temperature,
                     'moving': bool(moving)}
+
+    def get_sync_feedback(self, servo_id_list):
+        """
+        Returns the id, goal, position, error, speed, load, voltage, temperature
+        and moving values from the specified servo.
+        """
+        # sync read in 17 consecutive bytes starting with low value for goal
+        # position
+        response = self.sync_read(servo_id_list, DXL_GOAL_POSITION_L, 17)
+        errors = {}
+
+        state_list = []
+
+        if response:
+            self.exception_on_error(
+                response[4], servo_id, 'fetching full servo status (sync)')
+
+        if len(response) == 7 + (17 + 1) * len(servo_id_list):
+
+            for i in range(len(servo_id_list)):
+
+                errors[servo_id_list] = response[5 + i * (17 + 1)]
+                # extract data values from the raw data
+                goal = response[5 + 1 + i * (17 + 1)] + (
+                    response[6 + 1 + i * (17 + 1)] << 8)
+                position = response[11 + 1 + i * (17 + 1)] + (
+                    response[12 + 1 + i * (17 + 1)] << 8)
+                error = position - goal
+                speed = response[13 + 1 + i * (17 + 1)] + (
+                    response[14 + 1 + i * (17 + 1)] << 8)
+                if speed > 1023:
+                    speed = 1023 - speed
+                load_raw = response[15 + 1 + i * (17 + 1)] + (
+                    response[16 + 1 + i * (17 + 1)] << 8)
+                load_direction = 1 if self.test_bit(load_raw, 10) else 0
+                load = (load_raw & int('1111111111', 2)) / 1024.0
+                if load_direction == 1:
+                    load = -load
+                voltage = response[17 + 1 + i * (17 + 1)] / 10.0
+                temperature = response[18 + 1 + i * (17 + 1)]
+                moving = response[21 + 1 + i * (17 + 1)]
+                timestamp = response[-1]
+
+                data = {'timestamp': timestamp,
+                        'id': servo_id,
+                        'goal': goal,
+                        'position': position,
+                        'error': error,
+                        'speed': speed,
+                        'load': load,
+                        'voltage': voltage,
+                        'temperature': temperature,
+                        'moving': bool(moving)}
+
+                state_list.append(MotorState(**data))
+        return state_list, errors
 
     def get_fast_feedback(self, servo_id):
         """
