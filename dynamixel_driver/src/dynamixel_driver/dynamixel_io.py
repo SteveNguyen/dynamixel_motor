@@ -268,7 +268,7 @@ class DynamixelIO(object):
             time.sleep(0.05)  # 0.00235)
 
             # read response
-            data = self.__read_response(0xfd)
+            data = self.__read_response(DXL_SYNC_READ_ADDR)
             data.append(timestamp)
 
         return data
@@ -1063,53 +1063,71 @@ class DynamixelIO(object):
         """
         # sync read in 17 consecutive bytes starting with low value for goal
         # position
-        response = self.sync_read(servo_id_list, DXL_GOAL_POSITION_L, 17)
-        errors = {}
 
+        # WARNING! The length of the packet is in fact limited to 255!
+        # we may have to read everything in 2 times
+
+        errors = {}
         state_list = []
 
-        if response:
-            self.exception_on_error(
-                response[4], 0xfd, 'fetching full servo status (sync)')
+        nbcut = len(servo_id_list) // 12
+        remain = len(servo_id_list) % 12
 
-        if len(response) == 7 + (17 + 1) * len(servo_id_list):
+        slicerange = [12 * i for i in range(1, nbcut + 1, 1)]
+        if remain != 0:
+            slicerange.append(slicerange[-1] + remain)
 
-            for i in range(len(servo_id_list)):
+        prev = 0
 
-                errors[servo_id_list[i]] = response[5 + i * (17 + 1)]
-                # extract data values from the raw data
-                goal = response[5 + 1 + i * (17 + 1)] + (
-                    response[6 + 1 + i * (17 + 1)] << 8)
-                position = response[11 + 1 + i * (17 + 1)] + (
-                    response[12 + 1 + i * (17 + 1)] << 8)
-                error = position - goal
-                speed = response[13 + 1 + i * (17 + 1)] + (
-                    response[14 + 1 + i * (17 + 1)] << 8)
-                if speed > 1023:
-                    speed = 1023 - speed
-                load_raw = response[15 + 1 + i * (17 + 1)] + (
-                    response[16 + 1 + i * (17 + 1)] << 8)
-                load_direction = 1 if self.test_bit(load_raw, 10) else 0
-                load = (load_raw & int('1111111111', 2)) / 1024.0
-                if load_direction == 1:
-                    load = -load
-                voltage = response[17 + 1 + i * (17 + 1)] / 10.0
-                temperature = response[18 + 1 + i * (17 + 1)]
-                moving = response[21 + 1 + i * (17 + 1)]
-                timestamp = response[-1]
+        for r in slicerange:  # fixme, something more generic...
 
-                data = {'timestamp': timestamp,
-                        'id': servo_id_list[i],
-                        'goal': goal,
-                        'position': position,
-                        'error': error,
-                        'speed': speed,
-                        'load': load,
-                        'voltage': voltage,
-                        'temperature': temperature,
-                        'moving': bool(moving)}
+            response = self.sync_read(
+                servo_id_list[prev:r], DXL_GOAL_POSITION_L, 17)
 
-                state_list.append(data)
+            if response:
+                self.exception_on_error(
+                    response[4], 0xfd, 'fetching full servo status (sync)')
+
+            if len(response) == 7 + (17 + 1) * (r - prev)  # len(servo_id_list):
+
+                i = 0
+                for id in servo_id_list[prev:r]:
+
+                    errors[id] = response[5 + i * (17 + 1)]
+                    # extract data values from the raw data
+                    goal = response[5 + 1 + i * (17 + 1)] + (
+                        response[6 + 1 + i * (17 + 1)] << 8)
+                    position = response[11 + 1 + i * (17 + 1)] + (
+                        response[12 + 1 + i * (17 + 1)] << 8)
+                    error = position - goal
+                    speed = response[13 + 1 + i * (17 + 1)] + (
+                        response[14 + 1 + i * (17 + 1)] << 8)
+                    if speed > 1023:
+                        speed = 1023 - speed
+                    load_raw = response[15 + 1 + i * (17 + 1)] + (
+                        response[16 + 1 + i * (17 + 1)] << 8)
+                    load_direction = 1 if self.test_bit(load_raw, 10) else 0
+                    load = (load_raw & int('1111111111', 2)) / 1024.0
+                    if load_direction == 1:
+                        load = -load
+                    voltage = response[17 + 1 + i * (17 + 1)] / 10.0
+                    temperature = response[18 + 1 + i * (17 + 1)]
+                    moving = response[21 + 1 + i * (17 + 1)]
+                    timestamp = response[-1]
+
+                    data = {'timestamp': timestamp,
+                            'id': id,
+                            'goal': goal,
+                            'position': position,
+                            'error': error,
+                            'speed': speed,
+                            'load': load,
+                            'voltage': voltage,
+                            'temperature': temperature,
+                            'moving': bool(moving)}
+
+                    state_list.append(data)
+
         return state_list, errors
 
     def get_fast_feedback(self, servo_id):
