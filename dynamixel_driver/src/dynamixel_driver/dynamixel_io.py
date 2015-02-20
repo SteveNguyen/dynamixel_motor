@@ -1078,9 +1078,10 @@ class DynamixelIO(object):
             slicerange.append(slicerange[-1] + remain)
 
         prev = 0
-
+        print
+        print slicerange
         for r in slicerange:  # fixme, something more generic...
-
+            print prev, r, servo_id_list[prev:r]
             response = self.sync_read(
                 servo_id_list[prev:r], DXL_GOAL_POSITION_L, 17)
 
