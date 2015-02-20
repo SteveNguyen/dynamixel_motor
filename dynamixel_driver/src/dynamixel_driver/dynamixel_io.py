@@ -1171,7 +1171,7 @@ class DynamixelIO(object):
                     errors[id] = response[5 + i * (2 + 1)]
                     # extract data values from the raw data
                     position = response[5 + 1 + i * (2 + 1)] + (
-                        response[5 + 1 + i * (2 + 1)] << 8)
+                        response[6 + 1 + i * (2 + 1)] << 8)
 
                     timestamp = response[-1]
 
@@ -1189,6 +1189,8 @@ class DynamixelIO(object):
                     state_list.append(data)
 
                     i += 1
+            else:
+                rospy.logwarn('Bad fast sync packet?')
             prev = r
 
         return state_list, errors
@@ -1205,6 +1207,7 @@ class DynamixelIO(object):
                 response[4], servo_id, 'fetching fast servo status (only pos)')
         if len(response) == 9:
             # extract data values from the raw data
+
             position = response[5] + (response[6] << 8)
             timestamp = response[-1]
 

@@ -319,6 +319,7 @@ class SerialProxy():
                     if not self.fast:
                         statelist, errors = self.dxl_io.get_sync_feedback(
                             self.sync_read_list)
+                        print errors
                     # TODO check errors
                     else:
                         statelist, errors = self.dxl_io.get_fast_sync_feedback(
