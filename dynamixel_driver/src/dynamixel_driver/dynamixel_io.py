@@ -1109,7 +1109,7 @@ class DynamixelIO(object):
                         'temperature': temperature,
                         'moving': bool(moving)}
 
-                state_list.append(MotorState(**data))
+                state_list.append(data)
         return state_list, errors
 
     def get_fast_feedback(self, servo_id):

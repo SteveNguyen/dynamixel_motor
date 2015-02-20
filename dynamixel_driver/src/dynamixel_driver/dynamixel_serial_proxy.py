@@ -319,7 +319,8 @@ class SerialProxy():
                 # TODO check errors
 
                 if statelist:
-                    motor_states = statelist
+                    for state in statelist:
+                        motor_states.append(MotorState(**state))
                     if dynamixel_io.exception:
                         raise dynamixel_io.exception
 
