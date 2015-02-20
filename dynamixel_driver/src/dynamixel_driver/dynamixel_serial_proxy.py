@@ -323,21 +323,21 @@ class SerialProxy():
                     if dynamixel_io.exception:
                         raise dynamixel_io.exception
 
-                except dynamixel_io.FatalErrorCodeError, fece:
-                    rospy.logerr(fece)
-                except dynamixel_io.NonfatalErrorCodeError, nfece:
-                    self.error_counts['non_fatal'] += 1
-                    rospy.logdebug(nfece)
-                except dynamixel_io.ChecksumError, cse:
-                    self.error_counts['checksum'] += 1
-                    rospy.logdebug(cse)
-                except dynamixel_io.DroppedPacketError, dpe:
-                    self.error_counts['dropped'] += 1
-                    rospy.logdebug(dpe.message)
-                except OSError, ose:
-                    if ose.errno != errno.EAGAIN:
-                        rospy.logfatal(errno.errorcode[ose.errno])
-                        rospy.signal_shutdown(errno.errorcode[ose.errno])
+            except dynamixel_io.FatalErrorCodeError, fece:
+                rospy.logerr(fece)
+            except dynamixel_io.NonfatalErrorCodeError, nfece:
+                self.error_counts['non_fatal'] += 1
+                rospy.logdebug(nfece)
+            except dynamixel_io.ChecksumError, cse:
+                self.error_counts['checksum'] += 1
+                rospy.logdebug(cse)
+            except dynamixel_io.DroppedPacketError, dpe:
+                self.error_counts['dropped'] += 1
+                rospy.logdebug(dpe.message)
+            except OSError, ose:
+                if ose.errno != errno.EAGAIN:
+                    rospy.logfatal(errno.errorcode[ose.errno])
+                    rospy.signal_shutdown(errno.errorcode[ose.errno])
 
             # if for some reasons there are motors we don't want to sync read
             for motor_id in self.motors:
