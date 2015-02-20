@@ -243,7 +243,7 @@ class DynamixelIO(object):
         length = 4 + len(servo_id_list)  # instruction, address, size, checksum
 
         packet = [0xFF, 0xFF]
-        data = [DXL_SYNC_READ_ADDR, lenth, DXL_SYNC_READ_DATA, address, size]
+        data = [DXL_SYNC_READ_ADDR, length, DXL_SYNC_READ_DATA, address, size]
 
         data = data + servo_id_list
 
