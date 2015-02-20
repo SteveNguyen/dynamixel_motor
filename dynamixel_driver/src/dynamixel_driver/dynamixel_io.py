@@ -253,7 +253,8 @@ class DynamixelIO(object):
 
         checksum = 255 - ((check) % 256)
 
-        packet = packet + data + checksum
+        packet = packet + data
+        packet.append(checksum)
         packetStr = array('B', packet).tostring()
                           # same as: packetStr = ''.join([chr(byte) for byte in
                           # packet])
