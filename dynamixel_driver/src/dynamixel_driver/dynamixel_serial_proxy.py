@@ -410,7 +410,7 @@ class SerialProxy():
                     msl = FastMotorStateList()
                 else:
                     msl = MotorStateList()
-                msl = MotorStateList()
+
                 msl.motor_states = motor_states
                 self.motor_states_pub.publish(msl)
 
