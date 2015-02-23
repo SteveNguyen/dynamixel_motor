@@ -266,8 +266,8 @@ class DynamixelIO(object):
 
             # wait for response packet from the motor
             timestamp = time.time()
-            time.sleep(0.0013)  # 0.00235) #why?
-
+            # time.sleep(0.0013)  # 0.00235) #why?
+            time.sleep(0.0025)
             # read response
             data = self.__read_response(DXL_SYNC_READ_ADDR)
             data.append(timestamp)
@@ -1357,14 +1357,13 @@ class DynamixelIO(object):
             servo_id, self.ser.port, self.ser.baudrate, command_failed)
 
         if error_code != 0:
-            print error_code,  servo_id
-
+            print error_code, servo_id
         if not isinstance(error_code, int):
             msg = 'Communcation Error ' + ex_message
             exception = NonfatalErrorCodeError(msg, 0)
             return
 
-        if error_code == 0xff:
+        if error_code == 255:
             msg = 'Communcation Error ' + ex_message
             exception = NonfatalErrorCodeError(msg, 0)
             return
