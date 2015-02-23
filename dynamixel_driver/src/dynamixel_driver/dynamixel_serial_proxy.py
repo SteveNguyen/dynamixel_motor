@@ -63,6 +63,10 @@ from diagnostic_msgs.msg import KeyValue
 from dynamixel_msgs.msg import MotorState
 from dynamixel_msgs.msg import MotorStateList
 
+from dynamixel_msgs.msg import FastMotorState
+from dynamixel_msgs.msg import FastMotorStateList
+
+
 # maybe todo
 # from dynamixel_msgs.msg import MotorPos
 # from dynamixel_msgs.msg import MotorPosList
@@ -111,8 +115,12 @@ class SerialProxy():
         self.current_state = MotorStateList()
         self.num_ping_retries = 5
 
-        self.motor_states_pub = rospy.Publisher(
-            'motor_states/%s' % self.port_namespace, MotorStateList, queue_size=None)
+        if self.fast:
+            self.motor_states_pub = rospy.Publisher(
+                'motor_states/%s' % self.port_namespace, FastMotorStateList, queue_size=None)
+        else:
+            self.motor_states_pub = rospy.Publisher(
+                'motor_states/%s' % self.port_namespace, MotorStateList, queue_size=None)
 
         self.diagnostics_pub = rospy.Publisher(
             '/diagnostics', DiagnosticArray, queue_size=None)
@@ -327,7 +335,10 @@ class SerialProxy():
 
                     if statelist:
                         for state in statelist:
-                            motor_states.append(MotorState(**state))
+                            if self.fast:
+                                motor_states.append(FastMotorState(**state))
+                            else:
+                                motor_states.append(MotorState(**state))
                         if dynamixel_io.exception:
                             raise dynamixel_io.exception
 
@@ -367,7 +378,7 @@ class SerialProxy():
                             state = self.dxl_io.get_fast_feedback(motor_id)
 
                             if state:
-                                motor_states.append(MotorState(**state))
+                                motor_states.append(FastMotorState(**state))
                                 if dynamixel_io.exception:
                                     raise dynamixel_io.exception
 
