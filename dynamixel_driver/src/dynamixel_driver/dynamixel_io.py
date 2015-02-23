@@ -272,7 +272,7 @@ class DynamixelIO(object):
             data = self.__read_response(DXL_SYNC_READ_ADDR)
             data.append(timestamp)
 
-        print 'read:', data
+        # print 'read:', data
         return data
 
     def ping(self, servo_id):
@@ -1355,6 +1355,9 @@ class DynamixelIO(object):
         exception = None
         ex_message = '[servo #%d on %s@%sbps]: %s failed' % (
             servo_id, self.ser.port, self.ser.baudrate, command_failed)
+
+        if error_code != 0:
+            print error_code,  servo_id
 
         if not isinstance(error_code, int):
             msg = 'Communcation Error ' + ex_message
