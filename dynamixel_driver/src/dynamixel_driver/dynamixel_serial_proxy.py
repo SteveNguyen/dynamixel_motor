@@ -491,19 +491,31 @@ class SerialProxy():
                 status.values.append(
                     KeyValue('Maximum Position (CCW)', str(self.motor_static_info[mid]['max_angle'])))
 
-                status.values.append(KeyValue('Goal', str(motor_state.goal)))
-                status.values.append(
-                    KeyValue('Position', str(motor_state.position)))
-                status.values.append(KeyValue('Error', str(motor_state.error)))
-                status.values.append(
-                    KeyValue('Velocity', str(motor_state.speed)))
-                status.values.append(KeyValue('Load', str(motor_state.load)))
-                status.values.append(
-                    KeyValue('Voltage', str(motor_state.voltage)))
-                status.values.append(
-                    KeyValue('Temperature', str(motor_state.temperature)))
-                status.values.append(
-                    KeyValue('Moving', str(motor_state.moving)))
+                if not self.fast:
+
+                    status.values.append(
+                        KeyValue('Goal', str(motor_state.goal)))
+                    status.values.append(
+                        KeyValue('Position', str(motor_state.position)))
+                    status.values.append(
+                        KeyValue('Error', str(motor_state.error)))
+                    status.values.append(
+                        KeyValue('Velocity', str(motor_state.speed)))
+                    status.values.append(
+                        KeyValue('Load', str(motor_state.load)))
+                    status.values.append(
+                        KeyValue('Voltage', str(motor_state.voltage)))
+                    status.values.append(
+                        KeyValue('Temperature', str(motor_state.temperature)))
+                    status.values.append(
+                        KeyValue('Moving', str(motor_state.moving)))
+
+                else:
+
+                    status.values.append(
+                        KeyValue('Position', str(motor_state.position)))
+                    status.values.append(
+                        KeyValue('Error', str(motor_state.error)))
 
                 if motor_state.temperature >= self.error_level_temp:
                     status.level = DiagnosticStatus.ERROR
