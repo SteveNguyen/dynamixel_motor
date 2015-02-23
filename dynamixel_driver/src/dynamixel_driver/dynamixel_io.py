@@ -1202,6 +1202,7 @@ class DynamixelIO(object):
                     state_list.append(data)
 
                     i += 1
+
             else:
                 rospy.logwarn('Bad fast sync packet?')
             prev = r
@@ -1356,8 +1357,8 @@ class DynamixelIO(object):
         ex_message = '[servo #%d on %s@%sbps]: %s failed' % (
             servo_id, self.ser.port, self.ser.baudrate, command_failed)
 
-        if error_code != 0:
-            print error_code, servo_id
+        # if error_code != 0:
+        #     print error_code, servo_id
         if not isinstance(error_code, int):
             msg = 'Communcation Error ' + ex_message
             exception = NonfatalErrorCodeError(msg, 0)
