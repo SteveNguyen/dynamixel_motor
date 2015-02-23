@@ -10,6 +10,9 @@ add_message_files(
   MotorState.msg
   MotorStateList.msg
   ImuState.msg
+  FastMotorState.msg
+  FastJointState.msg
+  FastMotorStateList.msg
 )
 
 generate_messages(
