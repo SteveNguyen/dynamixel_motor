@@ -259,19 +259,20 @@ class DynamixelIO(object):
                           # same as: packetStr = ''.join([chr(byte) for byte in
                           # packet])
 
+        print 'sent: ', data
+        data = []
         with self.serial_mutex:
             self.__write_serial(packetStr)
 
             # wait for response packet from the motor
             timestamp = time.time()
-            time.sleep(0.0013)  # 0.00235)
-            # time.sleep(0.01)  # 0.00235) #TODO to be tuned
+            time.sleep(0.0013)  # 0.00235) #why?
 
             # read response
             data = self.__read_response(DXL_SYNC_READ_ADDR)
             data.append(timestamp)
 
-        print data
+        print 'read:', data
         return data
 
     def ping(self, servo_id):
