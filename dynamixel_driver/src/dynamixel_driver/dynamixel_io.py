@@ -272,7 +272,7 @@ class DynamixelIO(object):
             data = self.__read_response(DXL_SYNC_READ_ADDR)
             data.append(timestamp)
 
-        # print 'read:', data
+        print 'read:', data
         return data
 
     def ping(self, servo_id):
