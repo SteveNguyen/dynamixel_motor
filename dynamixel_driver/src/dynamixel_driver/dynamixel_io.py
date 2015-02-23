@@ -264,13 +264,14 @@ class DynamixelIO(object):
 
             # wait for response packet from the motor
             timestamp = time.time()
-            # time.sleep(0.0013)  # 0.00235)
-            time.sleep(0.01)  # 0.00235) #TODO to be tuned
+            time.sleep(0.0013)  # 0.00235)
+            # time.sleep(0.01)  # 0.00235) #TODO to be tuned
 
             # read response
             data = self.__read_response(DXL_SYNC_READ_ADDR)
             data.append(timestamp)
 
+        print data
         return data
 
     def ping(self, servo_id):
