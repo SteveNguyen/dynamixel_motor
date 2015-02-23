@@ -47,7 +47,7 @@ __email__ = 'anton@email.arizona.edu'
 import rospy
 
 from dynamixel_driver.dynamixel_const import *
-from dynamixel_controllers.joint_controller import JointController
+from dynamixel_controllers.joint_sync_controller import JointController
 
 from dynamixel_msgs.msg import FastJointState as JointState
 
