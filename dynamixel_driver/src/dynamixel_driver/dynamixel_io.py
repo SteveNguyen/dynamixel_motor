@@ -1085,7 +1085,7 @@ class DynamixelIO(object):
         for r in slicerange:
 
             response = self.sync_read(
-                servo_id_list[prev:r], DXL_PRESENT_POSITION_L, 17)
+                servo_id_list[prev:r], DXL_GOAL_POSITION_L, 17)
 
             if response:
                 self.exception_on_error(
