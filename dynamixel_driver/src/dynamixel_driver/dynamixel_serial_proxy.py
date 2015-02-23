@@ -406,6 +406,10 @@ class SerialProxy():
                         rospy.signal_shutdown(errno.errorcode[ose.errno])
 
             if motor_states:
+                if self.fast:
+                    msl = FastMotorStateList()
+                else:
+                    msl = MotorStateList()
                 msl = MotorStateList()
                 msl.motor_states = motor_states
                 self.motor_states_pub.publish(msl)
