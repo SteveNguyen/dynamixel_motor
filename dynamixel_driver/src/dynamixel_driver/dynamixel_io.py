@@ -1360,6 +1360,12 @@ class DynamixelIO(object):
             msg = 'Communcation Error ' + ex_message
             exception = NonfatalErrorCodeError(msg, 0)
             return
+
+        if error_code == 0xff:
+            msg = 'Communcation Error ' + ex_message
+            exception = NonfatalErrorCodeError(msg, 0)
+            return
+
         if not error_code & DXL_OVERHEATING_ERROR == 0:
             msg = 'Overheating Error ' + ex_message
             exception = FatalErrorCodeError(msg, error_code)
