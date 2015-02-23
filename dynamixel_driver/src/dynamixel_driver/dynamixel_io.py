@@ -1072,9 +1072,9 @@ class DynamixelIO(object):
         errors = {}
         state_list = []
 
-        maxl = 12
-        nbcut = len(servo_id_list) // 10
-        remain = len(servo_id_list) % 10
+        maxl = 10
+        nbcut = len(servo_id_list) // maxl
+        remain = len(servo_id_list) % maxl
 
         slicerange = [maxl * i for i in range(1, nbcut + 1, 1)]
         if remain != 0:
