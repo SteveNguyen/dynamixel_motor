@@ -1099,6 +1099,10 @@ class DynamixelIO(object):
                 for id in servo_id_list[prev:r]:
 
                     errors[id] = response[5 + i * (17 + 1)]
+
+                    self.exception_on_error(
+                        errors[id], id, 'fetching servo status (sync)')
+
                     # extract data values from the raw data
                     goal = response[5 + 1 + i * (17 + 1)] + (
                         response[6 + 1 + i * (17 + 1)] << 8)
@@ -1175,6 +1179,9 @@ class DynamixelIO(object):
                 for id in servo_id_list[prev:r]:
 
                     errors[id] = response[5 + i * (2 + 1)]
+                    self.exception_on_error(
+                        errors[id], id, 'fetching servo status (fast sync)')
+
                     # extract data values from the raw data
                     position = response[5 + 1 + i * (2 + 1)] + (
                         response[6 + 1 + i * (2 + 1)] << 8)
