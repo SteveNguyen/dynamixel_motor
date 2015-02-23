@@ -517,15 +517,17 @@ class SerialProxy():
                     status.values.append(
                         KeyValue('Error', str(motor_state.error)))
 
-                if motor_state.temperature >= self.error_level_temp and not self.fast:
-                    status.level = DiagnosticStatus.ERROR
-                    status.message = 'OVERHEATING'
-                elif motor_state.temperature >= self.warn_level_temp and not self.fast:
-                    status.level = DiagnosticStatus.WARN
-                    status.message = 'VERY HOT'
-                else:
-                    status.level = DiagnosticStatus.OK
-                    status.message = 'OK'
+                if not self.fast:
+
+                    if motor_state.temperature >= self.error_level_temp:
+                        status.level = DiagnosticStatus.ERROR
+                        status.message = 'OVERHEATING'
+                    elif motor_state.temperature >= self.warn_level_temp:
+                        status.level = DiagnosticStatus.WARN
+                        status.message = 'VERY HOT'
+                    else:
+                        status.level = DiagnosticStatus.OK
+                        status.message = 'OK'
 
                 diag_msg.status.append(status)
 
