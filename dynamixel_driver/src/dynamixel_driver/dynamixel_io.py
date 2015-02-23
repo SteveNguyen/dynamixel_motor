@@ -1190,14 +1190,9 @@ class DynamixelIO(object):
 
                     data = {'timestamp': timestamp,
                             'id': id,
-                            'goal': 0,
                             'position': position,
-                            'error': errors[id],
-                            'speed': 0,
-                            'load': 0,
-                            'voltage': 0,
-                            'temperature': 0,
-                            'moving': True}
+                            'error': errors[id]
+                            }
 
                     state_list.append(data)
 
@@ -1227,14 +1222,9 @@ class DynamixelIO(object):
 
             return {'timestamp': timestamp,
                     'id': servo_id,
-                    'goal': 0,
                     'position': position,
-                    'error': 0,
-                    'speed': 0,
-                    'load': 0,
-                    'voltage': 0,
-                    'temperature': 0,
-                    'moving': True}
+                    'error': 0
+                    }
 
             # return the data in a dictionary
             # return {'timestamp': timestamp,
