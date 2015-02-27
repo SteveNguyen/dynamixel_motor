@@ -158,7 +158,7 @@ class JointPositionController(JointController):
             #         self.compliance_punch[self.motor_name_id[motor_id]])
             if self.torque_limit[self.motor_name_id[motor_id]] is not None:
                 self.set_torque_limit(
-                    self.torque_limit[self.motor_name_id[motor_id]])
+                    self.torque_limit[self.motor_name_id[motor_id]], self.motor_name_id[motor_id])
 
             self.joint_max_speed[self.motor_name_id[motor_id]] = rospy.get_param(
                 self.controller_namespace + '/joint_max_speed', self.MAX_VELOCITY[self.motor_name_id[motor_id]])
@@ -177,7 +177,8 @@ class JointPositionController(JointController):
                 self.joint_speed[self.motor_name_id[motor_id]] = self.joint_max_speed[
                     self.motor_name_id[motor_id]]
 
-            self.set_speed(self.joint_speed[self.motor_name_id[motor_id]])
+            self.set_speed(
+                self.joint_speed[self.motor_name_id[motor_id]], self.motor_name_id[motor_id])
 
         return True
 
