@@ -202,7 +202,7 @@ class JointPositionController(JointController):
         self.dxl_io.set_multi_torque_enabled([mcv])
 
     def set_speed(self, speed, name):
-        mcv = (self.motor_id[name], self.spd_rad_to_raw(speed))
+        mcv = (self.motor_id[name], self.spd_rad_to_raw(speed, name))
         self.dxl_io.set_multi_speed([mcv])
 
     # def set_compliance_slope(self, slope):
