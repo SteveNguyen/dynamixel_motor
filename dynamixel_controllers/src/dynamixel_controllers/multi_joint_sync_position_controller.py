@@ -62,7 +62,7 @@ class JointPositionController(JointController):
         # dict {joint_name:name, joint_speed:speed,
         # motor:{id:id,init:init,min:min,max:max}}
 
-        self.joins = rospy.get_param(self.controller_namespace + '/joints')
+        self.joints = rospy.get_param(self.controller_namespace + '/joints')
         self.ids_list = []
         self.motor_name_id = dict()
 
@@ -75,7 +75,7 @@ class JointPositionController(JointController):
         self.flipped = dict()
         self.joint_state = dict()
 
-        for j in self.joints:
+        for n, j in self.joints.iteritems():
 
             self.motor_id[j['joint_name']] = j['motor']['id']
             self.motor_name_id[j['motor']['id']] = j['joint_name']
