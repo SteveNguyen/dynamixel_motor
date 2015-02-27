@@ -89,7 +89,7 @@ class JointController:
 
             # self.joint_name = rospy.get_param(
             #     self.controller_namespace + '/joint_name')
-            self.joint_speedj['joint_name'] = rospy.get_param(
+            self.joint_speed[j['joint_name']] = rospy.get_param(
                 j['joint_name'] + '/joint_speed', 1.0)
             # self.compliance_slope = rospy.get_param(
             #     self.controller_namespace + '/joint_compliance_slope', None)
@@ -97,14 +97,14 @@ class JointController:
             #     self.controller_namespace + '/joint_compliance_margin', None)
             # self.compliance_punch = rospy.get_param(
             #     self.controller_namespace + '/joint_compliance_punch', None)
-            self.torque_limitj['joint_name'] = rospy.get_param(
+            self.torque_limit[j['joint_name']] = rospy.get_param(
                 j['joint_name'] + '/joint_torque_limit', None)
 
             # self.__ensure_limits()
 
-            self.speed_servicej['joint_name'] = rospy.Service(
+            self.speed_service[j['joint_name']] = rospy.Service(
                 j['joint_name'] + '/set_speed', SetSpeed, self.process_set_speed)
-            self.torque_servicej['joint_name'] = rospy.Service(
+            self.torque_service[j['joint_name']] = rospy.Service(
                 j['joint_name'] + '/torque_enable', TorqueEnable, self.process_torque_enable)
 
             # self.compliance_slope_service = rospy.Service(
@@ -115,7 +115,7 @@ class JointController:
             # self.controller_namespace + '/set_compliance_punch',
             # SetCompliancePunch, self.process_set_compliance_punch)
 
-            self.torque_limit_servicej['joint_name'] = rospy.Service(
+            self.torque_limit_service[j['joint_name']] = rospy.Service(
                 j['joint_name'] + '/set_torque_limit', SetTorqueLimit, self.process_set_torque_limit)
 
     # def __ensure_limits(self):
