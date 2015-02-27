@@ -68,7 +68,7 @@ class JointController:
         self.controller_namespace = controller_namespace
         self.port_namespace = port_namespace
 
-        self.joins = rospy.get_param(self.controller_namespace + '/joints')
+        self.joints = rospy.get_param(self.controller_namespace + '/joints')
         self.ids_list = []
         self.motor_name_id = dict()
         for j in self.joints:
