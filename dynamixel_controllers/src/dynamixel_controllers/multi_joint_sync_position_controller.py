@@ -273,5 +273,5 @@ class JointPositionController(JointController):
         mcv = []
         for cmd in msg:
             angle = cmd.angle
-            mcv + = (self.motor_id[cmd.name], self.pos_rad_to_raw(angle, cmd.name))
-        self.dxl_io.set_multi_position([mcv])
+            mcv + = [(self.motor_id[cmd.name], self.pos_rad_to_raw(angle, cmd.name))]
+        self.dxl_io.set_multi_position(mcv)
