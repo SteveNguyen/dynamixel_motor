@@ -13,6 +13,8 @@ add_message_files(
   FastMotorState.msg
   FastJointState.msg
   FastMotorStateList.msg
+  MotorCmd.msg
+  MotorCmdList.msg
 )
 
 generate_messages(
