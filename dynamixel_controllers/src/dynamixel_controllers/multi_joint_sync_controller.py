@@ -127,6 +127,8 @@ class JointController:
         self.torque_service_h = dict()
         self.torque_limit_service_h = dict()
 
+        self.joint_state_pub = dict()
+
         for n, j in self.joints.iteritems():
 
             self.motor_id[j['joint_name']] = j['motor']['id']
