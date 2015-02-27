@@ -271,7 +271,11 @@ class JointPositionController(JointController):
     def process_command(self, msg):
 
         mcv = []
+        print 'DEBUG msg, ', msg
         for cmd in msg:
+            print 'DEBUG cmd,', cmd
             angle = cmd.angle
-            mcv + = [(self.motor_id[cmd.name], self.pos_rad_to_raw(angle, cmd.name))]
+            mcv += [
+                (self.motor_id[cmd.name], self.pos_rad_to_raw(angle, cmd.name))]
+            print 'DEBUG mcv, ', mcv
         self.dxl_io.set_multi_position(mcv)
