@@ -252,7 +252,7 @@ class JointPositionController(JointController):
     def process_motor_states(self, state_list):
         if self.running:
 
-            for state in state_list:
+            for state in state_list.motor_states:
 
                 # self.joint_state.motor_temps = [state.temperature]
                 # self.joint_state.goal_pos = self.raw_to_rad(
