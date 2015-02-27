@@ -191,7 +191,7 @@ class JointPositionController(JointController):
         # velocity of 0 means maximum, make sure that doesn't happen
         return max(1, int(round(spd_rad / self.VELOCITY_PER_TICK[name])))
 
-    def set_torque_enable(self, torque_enable, [name]):
+    def set_torque_enable(self, torque_enable, name):
         mcv = (self.motor_id[name], torque_enable)
         self.dxl_io.set_multi_torque_enabled([mcv])
 
