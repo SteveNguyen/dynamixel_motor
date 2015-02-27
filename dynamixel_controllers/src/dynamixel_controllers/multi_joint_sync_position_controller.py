@@ -72,6 +72,9 @@ class JointPositionController(JointController):
         self.initial_position_raw = dict()
         self.min_angle_raw = dict()
         self.max_angle_raw = dict()
+        self.initial_position = dict()
+        self.min_angle = dict()
+        self.max_angle = dict()
         self.flipped = dict()
         self.joint_state = dict()
 
