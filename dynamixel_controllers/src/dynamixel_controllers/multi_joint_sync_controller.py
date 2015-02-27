@@ -64,7 +64,7 @@ class service_handler:
 
     def __init__(self, name, ctrl):
         self.name = name
-        self.ctrl
+        self.ctrl = ctrl
 
     def cb(self, req):
         pass
