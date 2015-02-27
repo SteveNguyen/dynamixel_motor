@@ -77,6 +77,8 @@ class JointPositionController(JointController):
         self.max_angle = dict()
         self.flipped = dict()
         self.joint_state = dict()
+        self.joint_speed = dict()
+        self.joint_max_speed = dict()
 
         for n, j in self.joints.iteritems():
 
