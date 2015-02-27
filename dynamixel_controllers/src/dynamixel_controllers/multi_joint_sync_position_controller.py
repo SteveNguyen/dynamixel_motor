@@ -68,7 +68,7 @@ class JointPositionController(JointController):
 
         self.motor_id = dict()
         self.motor_name_id = dict()
-        self.ids_list = dict()
+
         self.initial_position_raw = dict()
         self.min_angle_raw = dict()
         self.max_angle_raw = dict()
