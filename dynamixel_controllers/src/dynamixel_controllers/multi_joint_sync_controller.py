@@ -71,6 +71,17 @@ class JointController:
         self.joints = rospy.get_param(self.controller_namespace + '/joints')
         self.ids_list = []
         self.motor_name_id = dict()
+        self.motor_name_id = dict()
+
+        self.motor_id = dict()
+        self.motor_name_id = dict()
+        self.ids_list = dict()
+        self.initial_position_raw = dict()
+        self.min_angle_raw = dict()
+        self.max_angle_raw = dict()
+        self.flipped = dict()
+        self.joint_state = dict()
+
         for n, j in self.joints.iteritems():
 
             self.motor_id[j['joint_name']] = j['motor']['id']
