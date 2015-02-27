@@ -60,6 +60,43 @@ from dynamixel_msgs.msg import FastJointState as JointState
 from dynamixel_msgs.msg import MotorCmdList
 
 
+class service_handler:
+
+    def __init__(self, name, ctrl):
+        self.name = name
+        self.ctrl
+
+    def cb(self, req):
+        pass
+
+
+class process_torque_enable(service_handler):
+
+    def __init__(self, name, ctrl):
+        service_handler.__init__(self, name, ctrl)
+
+    def cb(self, req):
+        self.ctrl.ctrl_process_torque_enable(req, self.name)
+
+
+class process_set_torque_limit(service_handler):
+
+    def __init__(self, name, ctrl):
+        service_handler.__init__(self, name, ctrl)
+
+    def cb(self, req):
+        self.ctrl.ctrl_process_set_torque_limit(req, self.name)
+
+
+class process_set_speed(service_handler):
+
+    def __init__(self, name, ctrl):
+        service_handler.__init__(self, name, ctrl)
+
+    def cb(self, req):
+        self.ctrl.ctrl_process_set_speed(req, self.name)
+
+
 class JointController:
 
     def __init__(self, dxl_io, controller_namespace, port_namespace):
@@ -71,16 +108,24 @@ class JointController:
         self.joints = rospy.get_param(self.controller_namespace + '/joints')
         self.ids_list = []
         self.motor_name_id = dict()
-        self.motor_name_id = dict()
 
         self.motor_id = dict()
-        self.motor_name_id = dict()
+
         self.ids_list = dict()
         self.initial_position_raw = dict()
         self.min_angle_raw = dict()
         self.max_angle_raw = dict()
         self.flipped = dict()
         self.joint_state = dict()
+        self.joint_speed = dict()
+        self.torque_limit = dict()
+        self.speed_service = dict()
+        self.torque_service = dict()
+        self.torque_limit_service = dict()
+
+        self.speed_service_h = dict()
+        self.torque_service_h = dict()
+        self.torque_limit_service_h = dict()
 
         for n, j in self.joints.iteritems():
 
@@ -102,10 +147,19 @@ class JointController:
 
             # self.__ensure_limits()
 
+            self.speed_service_h[
+                j['joint_name']] = process_set_speed(j['joint_name'], self)
+            self.torque_service_h[
+                j['joint_name']] = process_torque_enable(j['joint_name'], self)
+            self.torque_limit_service_h[
+                j['joint_name']] = process_set_torque_limit(j['joint_name'], self)
+
             self.speed_service[j['joint_name']] = rospy.Service(
-                j['joint_name'] + '/set_speed', SetSpeed, self.process_set_speed)
+                j['joint_name'] + '/set_speed', SetSpeed, self.speed_service_h[j['joint_name']].cb)
             self.torque_service[j['joint_name']] = rospy.Service(
-                j['joint_name'] + '/torque_enable', TorqueEnable, self.process_torque_enable)
+                j['joint_name'] + '/torque_enable', TorqueEnable, self.torque_service_h[j['joint_name']].cb)
+            self.torque_limit_service[j['joint_name']] = rospy.Service(
+                j['joint_name'] + '/set_torque_limit', SetTorqueLimit, self.torque_limit_service_h[j['joint_name']].cb)
 
             # self.compliance_slope_service = rospy.Service(
             #     self.controller_namespace + '/set_compliance_slope', SetComplianceSlope, self.process_set_compliance_slope)
@@ -114,10 +168,6 @@ class JointController:
             # self.compliance_punch_service = rospy.Service(
             # self.controller_namespace + '/set_compliance_punch',
             # SetCompliancePunch, self.process_set_compliance_punch)
-
-            self.torque_limit_service[j['joint_name']] = rospy.Service(
-                j['joint_name'] + '/set_torque_limit', SetTorqueLimit, self.process_set_torque_limit)
-
     # def __ensure_limits(self):
     #     if self.compliance_slope is not None:
     #         if self.compliance_slope < DXL_MIN_COMPLIANCE_SLOPE:
@@ -126,7 +176,6 @@ class JointController:
     #             self.compliance_slope = DXL_MAX_COMPLIANCE_SLOPE
     #         else:
     #             self.compliance_slope = int(self.compliance_slope)
-
     #     if self.compliance_margin is not None:
     #         if self.compliance_margin < DXL_MIN_COMPLIANCE_MARGIN:
     #             self.compliance_margin = DXL_MIN_COMPLIANCE_MARGIN
@@ -134,7 +183,6 @@ class JointController:
     #             self.compliance_margin = DXL_MAX_COMPLIANCE_MARGIN
     #         else:
     #             self.compliance_margin = int(self.compliance_margin)
-
     #     if self.compliance_punch is not None:
     #         if self.compliance_punch < DXL_MIN_PUNCH:
     #             self.compliance_punch = DXL_MIN_PUNCH
@@ -142,13 +190,11 @@ class JointController:
     #             self.compliance_punch = DXL_MAX_PUNCH
     #         else:
     #             self.compliance_punch = int(self.compliance_punch)
-
     #     if self.torque_limit is not None:
     #         if self.torque_limit < 0:
     #             self.torque_limit = 0.0
     #         elif self.torque_limit > 1:
     #             self.torque_limit = 1.0
-
     def initialize(self):
         raise NotImplementedError
 
@@ -185,15 +231,15 @@ class JointController:
     def set_torque_limit(self, max_torque, name):
         raise NotImplementedError
 
-    def process_set_speed(self, req, name):
+    def ctrl_process_set_speed(self, req, name):
         self.set_speed(req.speed, name)
         return []  # success
 
-    def process_torque_enable(self, req, name):
+    def ctrl_process_torque_enable(self, req, name):
         self.set_torque_enable(req.torque_enable, name)
         return []
 
-    def process_set_torque_limit(self, req, name):
+    def ctrl_process_set_torque_limit(self, req, name):
         self.set_torque_limit(req.torque_limit, name)
         return []
 
