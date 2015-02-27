@@ -201,7 +201,7 @@ class JointController:
     def start(self):
         self.running = True
 
-        for j in self.joints:
+        for n, j in self.joints.iteritems():
 
             self.joint_state_pub[j['joint_name']] = rospy.Publisher(
                 j['joint_name'] + '/state', JointState, queue_size=None)
@@ -214,7 +214,7 @@ class JointController:
     def stop(self):
         self.running = False
 
-        for j in self.joints:
+        for n, j in self.joints.iteritems():
             self.joint_state_pub[j['joint_name']].unregister()
             self.speed_service[j['joint_name']].shutdown('normal shutdown')
             self.torque_service[j['joint_name']].shutdown('normal shutdown')
